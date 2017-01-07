@@ -437,6 +437,7 @@ Sources.SourceMapNamesResolver.RemoteObject = class extends SDK.RemoteObject {
           newProperties.push(new SDK.RemoteObjectProperty(
               name, property.value, property.enumerable, property.writable, property.isOwn, property.wasThrown,
               property.symbol, property.synthetic));
+          newProperties[newProperties.length-1].resolutionSourceProperty = property;
         }
       }
 

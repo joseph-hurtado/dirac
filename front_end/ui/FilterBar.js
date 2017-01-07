@@ -385,7 +385,7 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
       this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] = true;
     }
     for (var typeName in this._typeFilterElements)
-      this._typeFilterElements[typeName].classList.toggle('selected', this._allowedTypes[typeName]);
+      this._typeFilterElements[typeName].classList.toggle('selected', this._allowedTypes[typeName]?true:false);
     this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
   }
 

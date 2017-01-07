@@ -102,6 +102,11 @@ SDK.SourceMap.prototype = {
   url() {},
 
   /**
+   * @return {?SourceMapV3}
+   */
+  payload: function() {},
+
+  /**
    * @return {!Array<string>}
    */
   sourceURLs() {},
@@ -189,6 +194,7 @@ SDK.TextSourceMap = class {
         SDK.TextSourceMap._base64Map[base64Digits.charAt(i)] = i;
     }
 
+    this._payload = payload;
     this._json = payload;
     this._compiledURL = compiledURL;
     this._sourceMappingURL = sourceMappingURL;
@@ -250,6 +256,14 @@ SDK.TextSourceMap = class {
    */
   url() {
     return this._sourceMappingURL;
+  }
+
+  /**
+   * @override
+   * @return {?SourceMapV3}
+   */
+  payload() {
+    return this._payload;
   }
 
   /**

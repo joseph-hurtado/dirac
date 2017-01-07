@@ -104,6 +104,14 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   }
 
   /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {?SDK.Script}
+   */
+  static getScriptFromSourceCode(uiSourceCode) {
+    return uiSourceCode[Bindings.NetworkProject._scriptSymbol];
+  }
+
+  /**
    * @param {!SDK.Target} target
    * @param {?SDK.ResourceTreeFrame} frame
    * @param {boolean} isContentScripts

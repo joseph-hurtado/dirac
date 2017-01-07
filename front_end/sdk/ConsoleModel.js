@@ -145,6 +145,14 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
       return;
     }
 
+    if (msg.parameters) {
+      var firstParam = msg.parameters[0];
+      if (firstParam && firstParam.value == "~~$DIRAC-MSG$~~") {
+        this.dispatchEventToListeners(SDK.ConsoleModel.Events.DiracMessage, msg);
+        return;
+      }
+    }
+
     this._messages.push(msg);
     if (msg._exceptionId)
       this._messageByExceptionId.set(msg._exceptionId, msg);
@@ -239,6 +247,7 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
 /** @enum {symbol} */
 SDK.ConsoleModel.Events = {
   ConsoleCleared: Symbol('ConsoleCleared'),
+  DiracMessage: Symbol("DiracMessage"),
   MessageAdded: Symbol('MessageAdded'),
   MessageUpdated: Symbol('MessageUpdated'),
   CommandEvaluated: Symbol('CommandEvaluated')
@@ -525,6 +534,8 @@ SDK.ConsoleMessage.MessageType = {
   Result: 'result',
   Profile: 'profile',
   ProfileEnd: 'profileEnd',
+  DiracCommand: "diracCommand",
+  DiracMarkup: "diracMarkup",
   Command: 'command'
 };
 
@@ -575,6 +586,8 @@ SDK.MultitargetConsoleModel = class extends Common.Object {
     super();
     SDK.targetManager.observeTargets(this);
     SDK.targetManager.addModelListener(
+      SDK.ConsoleModel, SDK.ConsoleModel.Events.DiracMessage, this._consoleDiracMessage, this);
+    SDK.targetManager.addModelListener(
         SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, this._consoleMessageAdded, this);
     SDK.targetManager.addModelListener(
         SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageUpdated, this._consoleMessageUpdated, this);
@@ -619,6 +632,12 @@ SDK.MultitargetConsoleModel = class extends Common.Object {
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.ConsoleCleared);
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
+  _consoleDiracMessage(event) {
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.DiracMessage, event.data);
+  }
   /**
    * @param {!Common.Event} event
    */

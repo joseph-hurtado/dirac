@@ -132,10 +132,11 @@ UI.SuggestBox = class {
    * @param {!UI.SuggestBox.Suggestions} items
    */
   _updateWidth(items) {
-    if (this._hasVerticalScroll) {
-      this._element.style.width = '100vw';
-      return;
-    }
+    // this interferes with Dirac removal of max-width style in .suggest-box-horizontal CSS
+    // if (this._hasVerticalScroll) {
+    //   this._element.style.width = '100vw';
+    //   return;
+    // }
     if (!items.length)
       return;
     // If there are no scrollbars, set the width to the width of the largest row.
@@ -237,7 +238,7 @@ UI.SuggestBox = class {
    */
   createElementForItem(item) {
     var query = this._userEnteredText;
-    var element = createElementWithClass('div', 'suggest-box-content-item source-code');
+    var element = createElementWithClass('div', 'suggest-box-content-item source-code ' + (item.className || ''));
     if (item.iconType) {
       var icon = UI.Icon.create(item.iconType, 'suggestion-icon');
       element.appendChild(icon);
@@ -245,15 +246,17 @@ UI.SuggestBox = class {
     if (item.isSecondary)
       element.classList.add('secondary');
     element.tabIndex = -1;
+    element.createChild("span", "prologue").textContent = (item.prologue || "").trimEnd(50);
     var displayText = item.title.trimEnd(50 + query.length);
 
     var titleElement = element.createChild('span', 'suggestion-title');
     var index = displayText.toLowerCase().indexOf(query.toLowerCase());
     if (index > 0)
-      titleElement.createChild('span').textContent = displayText.substring(0, index);
+      titleElement.createChild('span', 'pre-query').textContent = displayText.substring(0, index);
     if (index > -1)
       titleElement.createChild('span', 'query').textContent = displayText.substring(index, index + query.length);
-    titleElement.createChild('span').textContent = displayText.substring(index > -1 ? index + query.length : 0);
+    titleElement.createChild('span', 'post-query').textContent = displayText.substring(index > -1 ? index + query.length : 0);
+    element.createChild("span", "epilogue").textContent = (item.epilogue || "").trimEnd(50);
     titleElement.createChild('span', 'spacer');
     if (item.subtitle) {
       var subtitleElement = element.createChild('span', 'suggestion-subtitle');
@@ -440,7 +443,7 @@ UI.SuggestBox = class {
 };
 
 /**
- * @typedef {!{title: string, subtitle: (string|undefined), iconType: (string|undefined), priority: (number|undefined), isSecondary: (boolean|undefined)}}
+ * @typedef {!{title: string, subtitle: (string|undefined), iconType: (string|undefined), priority: (number|undefined), isSecondary: (boolean|undefined), className: (string|undefined)}}
  */
 UI.SuggestBox.Suggestion;
 

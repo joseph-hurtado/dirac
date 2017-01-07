@@ -423,6 +423,9 @@ Sources.CallStackSidebarPane.CallFrame = class extends Sources.UIList.Item {
    */
   constructor(functionName, location, linkifier, debuggerCallFrame, locationPool, asyncCallFrame) {
     super(UI.beautifyFunctionName(functionName), '');
+    if (dirac.hasBeautifyFunctionNames) {
+      this.titleElement.title = dirac.getFullFunctionName(functionName);
+    }
     this._location = location;
     this._debuggerCallFrame = debuggerCallFrame;
     this._asyncCallFrame = asyncCallFrame;
@@ -438,6 +441,7 @@ Sources.CallStackSidebarPane.CallFrame = class extends Sources.UIList.Item {
       return;
     var text = uiLocation.linkText();
     this.setSubtitle(text.trimMiddle(30));
-    this.subtitleElement.title = text;
+    var fullUrl = uiLocation.toUIString();
+    this.subtitleElement.title = fullUrl;
   }
 };
